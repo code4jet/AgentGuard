@@ -105,11 +105,11 @@ export default function LandingPage() {
               modes, and measure reliability before deployment.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button render={<Link href="/login" />} size="lg">
+              <Button render={<Link href="/login" />} nativeButton={false} size="lg">
                 Start testing free
                 <ArrowRight className="size-4" />
               </Button>
-              <Button render={<Link href="/dashboard" />} size="lg" variant="outline">
+              <Button render={<Link href="/dashboard" />} nativeButton={false} size="lg" variant="outline">
                 View live demo
               </Button>
             </div>
@@ -215,7 +215,7 @@ export default function LandingPage() {
                 introduces critical failures or regresses your score. Every deploy comes
                 with a signed report.
               </p>
-              <Button render={<Link href="/login" />} size="lg" variant="secondary" className="mt-8">
+              <Button render={<Link href="/login" />} nativeButton={false} size="lg" variant="secondary" className="mt-8">
                 Get your reliability score
                 <ArrowRight className="size-4" />
               </Button>
@@ -253,11 +253,11 @@ export default function LandingPage() {
             gating, and team reporting when you&apos;re ready.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button render={<Link href="/login" />} size="lg">
+            <Button render={<Link href="/login" />} nativeButton={false} size="lg">
               Start testing free
               <ArrowRight className="size-4" />
             </Button>
-            <Button render={<Link href="/dashboard" />} size="lg" variant="outline">
+            <Button render={<Link href="/dashboard" />} nativeButton={false} size="lg" variant="outline">
               Explore the dashboard
             </Button>
           </div>

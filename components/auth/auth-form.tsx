@@ -6,19 +6,50 @@ import { ArrowRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { createSupabaseBrowserClient } from '@/lib/supabase/browser'
 
 export function AuthForm() {
   const router = useRouter()
   const [mode, setMode] = useState<'signin' | 'signup'>('signin')
+  const [company, setCompany] = useState('')
+  const [email, setEmail] = useState('demo@northwind.ai')
+  const [password, setPassword] = useState('demo-password')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
-    // Frontend-only demo: simulate auth then route to dashboard.
-    setTimeout(() => {
+    setError(null)
+
+    try {
+      const supabase = createSupabaseBrowserClient()
+      const result = mode === 'signin'
+        ? await supabase.auth.signInWithPassword({ email, password })
+        : await supabase.auth.signUp({ email, password })
+
+      if (result.error) throw result.error
       router.push('/dashboard')
-    }, 900)
+      router.refresh()
+    } catch (submissionError) {
+      setError(submissionError instanceof Error ? submissionError.message : 'Authentication failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function signInWithProvider(provider: 'google' | 'github') {
+    setLoading(true)
+    setError(null)
+    const supabase = createSupabaseBrowserClient()
+    const { error: providerError } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    })
+    if (providerError) {
+      setError(providerError.message)
+      setLoading(false)
+    }
   }
 
   return (
@@ -63,7 +94,13 @@ export function AuthForm() {
         {mode === 'signup' && (
           <div className="space-y-2">
             <Label htmlFor="company">Company</Label>
-            <Input id="company" placeholder="Northwind AI" required />
+            <Input
+              id="company"
+              placeholder="Northwind AI"
+              value={company}
+              onChange={(event) => setCompany(event.target.value)}
+              required
+            />
           </div>
         )}
         <div className="space-y-2">
@@ -72,7 +109,8 @@ export function AuthForm() {
             id="email"
             type="email"
             placeholder="you@company.com"
-            defaultValue={mode === 'signin' ? 'demo@northwind.ai' : ''}
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
             required
           />
         </div>
@@ -89,7 +127,8 @@ export function AuthForm() {
             id="password"
             type="password"
             placeholder="••••••••••"
-            defaultValue={mode === 'signin' ? 'demo-password' : ''}
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
             required
           />
         </div>
@@ -109,6 +148,8 @@ export function AuthForm() {
         </Button>
       </form>
 
+      {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
+
       <div className="my-6 flex items-center gap-3">
         <span className="h-px flex-1 bg-border" />
         <span className="text-xs text-muted-foreground">or continue with</span>
@@ -116,10 +157,10 @@ export function AuthForm() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <Button variant="outline" size="lg" onClick={() => router.push('/dashboard')}>
+        <Button variant="outline" size="lg" onClick={() => signInWithProvider('google')} disabled={loading}>
           Google
         </Button>
-        <Button variant="outline" size="lg" onClick={() => router.push('/dashboard')}>
+        <Button variant="outline" size="lg" onClick={() => signInWithProvider('github')} disabled={loading}>
           GitHub
         </Button>
       </div>

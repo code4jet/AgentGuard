@@ -28,7 +28,7 @@ export default function DashboardPage() {
             Adversarial coverage across all connected agents, updated after every run.
           </p>
         </div>
-        <Button render={<Link href="/scenarios" />}>
+            <Button render={<Link href="/scenarios" />} nativeButton={false}>
           <Zap className="size-4" />
           New test run
         </Button>
@@ -104,7 +104,7 @@ export default function DashboardPage() {
               <h2 className="font-display text-lg font-medium text-foreground">Recent runs</h2>
               <p className="text-sm text-muted-foreground">Latest adversarial test batches</p>
             </div>
-            <Button variant="ghost" size="sm" render={<Link href="/results" />}>
+            <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/results" />}>
               View all
             </Button>
           </div>

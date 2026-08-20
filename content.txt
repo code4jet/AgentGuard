@@ -1,0 +1,251 @@
+**Read-Only Audit**
+
+**1. Routes/pages**
+
+Implemented:
+
+- `/` landing page: [app/page.tsx](app/page.tsx)
+- `/login`: [app/login/page.tsx](app/login/page.tsx)
+- `/dashboard`: [app/(app)/dashboard/page.tsx](app/(app)/dashboard/page.tsx)
+- Shared root layout: [app/layout.tsx](app/layout.tsx)
+- Authenticated shell layout: [app/(app)/layout.tsx](app/(app)/layout.tsx)
+
+Advertised but missing pages:
+
+- `/agents`
+- `/agents/configure`
+- `/scenarios`
+- `/runner`
+- `/results`
+- `/reliability`
+- `/regressions`
+
+These routes are declared in [components/app/nav-config.ts](components/app/nav-config.ts#L32), but no corresponding `page.tsx` files exist.
+
+No API routes exist.
+
+**2. Reusable components and organization**
+
+- Application shell, responsive sidebar, top bar: [components/app/app-shell.tsx](components/app/app-shell.tsx), [components/app/sidebar.tsx](components/app/sidebar.tsx)
+- Navigation configuration: [components/app/nav-config.ts](components/app/nav-config.ts)
+- Authentication form: [components/auth/auth-form.tsx](components/auth/auth-form.tsx)
+- Dashboard cards, tables, charts, reliability score: [components/dashboard](components/dashboard)
+- Landing-page navigation and dashboard preview: [components/landing](components/landing)
+- Branding and status indicators: [components/logo.tsx](components/logo.tsx), [components/status-badges.tsx](components/status-badges.tsx)
+- shadcn-style UI primitives: [components/ui](components/ui)
+- Tailwind/shadcn tokens: [app/globals.css](app/globals.css)
+
+The component organization is clean and suitable for extending into a real application.
+
+**3. Real versus mock UI**
+
+The entire product workflow is currently mock/demo-driven:
+
+- Data is defined statically in [lib/demo-data.ts](lib/demo-data.ts)
+- Dashboard metrics and active-agent count use demo constants: [app/(app)/dashboard/page.tsx](app/(app)/dashboard/page.tsx#L10)
+- Charts use static arrays: [components/dashboard/reliability-trend-chart.tsx](components/dashboard/reliability-trend-chart.tsx#L10), [components/dashboard/failure-distribution-chart.tsx](components/dashboard/failure-distribution-chart.tsx#L10)
+- Reliability score is hardcoded to `87.4`: [components/dashboard/reliability-score.tsx](components/dashboard/reliability-score.tsx#L11)
+- Landing-page metrics and preview are hardcoded: [app/page.tsx](app/page.tsx), [components/landing/hero-preview.tsx](components/landing/hero-preview.tsx)
+- Agent, scenario, live-step, result, and regression data types exist, but no screens consume them.
+
+**4. Nonfunctional buttons/forms/actions**
+
+- Sign-in and account creation only wait 900 ms and redirect to `/dashboard`; no authentication occurs: [components/auth/auth-form.tsx](components/auth/auth-form.tsx#L15)
+- Google and GitHub buttons only redirect to `/dashboard`: [components/auth/auth-form.tsx](components/auth/auth-form.tsx#L119)
+- Forgot password, Terms, Privacy, Docs, and support links use `href="#"`.
+- Search input has no state or filtering: [components/app/app-shell.tsx](components/app/app-shell.tsx#L65)
+- Company/agent switcher has no behavior.
+- Notifications button has no behavior.
+- “New test run”, “View all”, and run-row links point to missing routes: [app/(app)/dashboard/page.tsx](app/(app)/dashboard/page.tsx#L31)
+- Sidebar links navigate to missing pages: [**Verdict: PARTIALLY READY**
+
+The repository is a polished frontend prototype, not an MVP-ready full-stack product. The visual foundation is strong, but all persisted data, authentication, agent execution, evaluation, reporting, and regression functionality are absent.
+
+**1. Routes/pages**
+
+Implemented routes:
+
+- `/` landing page: [app/page.tsx](app/page.tsx#L87)
+- `/login`: [app/login/page.tsx](app/login/page.tsx#L5)
+- `/dashboard`: [app/(app)/dashboard/page.tsx](app/(app)/dashboard/page.tsx#L15)
+
+Advertised but missing:
+
+- `/agents`
+- `/agents/configure`
+- `/scenarios`
+- `/runner`
+- `/results`
+- `/reliability`
+- `/regressions`
+
+These are referenced by [components/app/nav-config.ts](components/app/nav-config.ts#L30) and dashboard links such as [app/(app)/dashboard/page.tsx](app/(app)/dashboard/page.tsx#L31).
+
+**2. Reusable components and organization**
+
+Good organization exists:
+
+- Application shell/sidebar: [components/app/app-shell.tsx](components/app/app-shell.tsx#L10), [components/app/sidebar.tsx](components/app/sidebar.tsx#L16)
+- Authentication UI: [components/auth/auth-form.tsx](components/auth/auth-form.tsx#L9)
+- Dashboard components:
+  - [components/dashboard/stat-card.tsx](components/dashboard/stat-card.tsx#L4)
+  - [components/dashboard/runs-table.tsx](components/dashboard/runs-table.tsx#L6)
+  - [components/dashboard/reliability-score.tsx](components/dashboard/reliability-score.tsx#L11)
+  - [components/dashboard/reliability-trend-chart.tsx](components/dashboard/reliability-trend-chart.tsx#L16)
+  - [components/dashboard/failure-distribution-chart.tsx](components/dashboard/failure-distribution-chart.tsx#L16)
+- Landing components: [components/landing/hero-preview.tsx](components/landing/hero-preview.tsx#L10), [components/landing/landing-nav.tsx](components/landing/landing-nav.tsx#L14)
+- Shared UI primitives under `components/ui/`: buttons, cards, inputs, labels, selects, switches, tabs, tables, dropdowns, tooltips, progress, charts, avatars, and toaster.
+- Shared styling/utilities: [app/globals.css](app/globals.css#L1), [lib/utils.ts](lib/utils.ts#L1), [components.json](components.json#L1)
+
+**3. Real versus mock UI**
+
+The application is overwhelmingly hardcoded/demo data.
+
+All core product data is defined in [lib/demo-data.ts](lib/demo-data.ts#L1), including:
+
+- Company metrics
+- Agents
+- Reliability trend
+- Failure categories
+- Test runs
+- Generated scenarios
+- Live steps
+- Results
+- Regressions
+
+The dashboard imports these constants directly at [app/(app)/dashboard/page.tsx](app/(app)/dashboard/page.tsx#L10). Charts and tables do the same, for example [components/dashboard/reliability-trend-chart.tsx](components/dashboard/reliability-trend-chart.tsx#L10).
+
+The landing page also contains hardcoded marketing metrics and preview results at [app/page.tsx](app/page.tsx#L66) and [components/landing/hero-preview.tsx](components/landing/hero-preview.tsx#L4).
+
+**4. Buttons, forms, and actions without backend functionality**
+
+- Login/signup form only waits 900 ms and redirects to `/dashboard`: [components/auth/auth-form.tsx](components/auth/auth-form.tsx#L15)
+- Google and GitHub buttons directly redirect to `/dashboard`: [components/auth/auth-form.tsx](components/auth/auth-form.tsx#L119)
+- Company input is collected but never persisted.
+- Forgot password, Terms, Privacy, Docs, and support links use `href="#"`.
+- Agent switcher has no action: [components/app/app-shell.tsx](components/app/app-shell.tsx#L57)
+- Search input has no state, filtering, or submit behavior: [components/app/app-shell.tsx](components/app/app-shell.tsx#L64)
+- Notifications button has no action: [components/app/app-shell.tsx](components/app/app-shell.tsx#L74)
+- Dashboard “New test run” navigates to a missing route: [app/(app)/dashboard/page.tsx](app/(app)/dashboard/page.tsx#L31)
+- Results links navigate to a missing route: [components/dashboard/runs-table.tsx](components/dashboard/runs-table.tsx#L62)
+- Sidebar navigation points to missing pages.
+
+**5. API calls and environment variables**
+
+No application API calls were found.
+
+Absent:
+
+- `fetch`
+- Axios
+- API route handlers
+- Server actions
+- Database clients
+- Auth providers
+- Prisma, Supabase, tRPC, GraphQL, or equivalent
+- WebSocket/streaming execution code
+
+The only environment reference is `process.env.NODE_ENV` for conditional Vercel Analytics rendering in [app/layout.tsx](app/layout.tsx#L40).
+
+No `.env` files were found. No secret values were exposed.
+
+**6. Stack/dependency assessment**
+
+The declared stack matches the requested frontend technologies:
+
+- Next.js `16.3.0`
+- React `19`
+- TypeScript `5.7.3`
+- Tailwind CSS `4.3.3`
+- shadcn configuration present
+- Recharts `3.8.0`
+- Lucide icons
+- Base UI primitives
+- `class-variance-authority`, `clsx`, `tailwind-merge`
+- Sonner notifications
+- Vercel Analytics
+
+Relevant configuration:
+
+- [package.json](package.json#L1)
+- [components.json](components.json#L1)
+- [app/globals.css](app/globals.css#L1)
+- [postcss.config.mjs](postcss.config.mjs#L1)
+
+Potential readiness concern: TypeScript build errors are explicitly ignored in [next.config.mjs](next.config.mjs#L3). Diagnostics reported no errors, but this configuration can conceal build-time type failures.
+
+**7. Current data flow**
+
+Current flow:
+
+1. Static TypeScript constants are declared in [lib/demo-data.ts](lib/demo-data.ts#L1).
+2. Server-rendered dashboard imports agents and runs.
+3. Client chart components import static chart arrays.
+4. Components render values directly.
+5. The auth form performs a local timer-based redirect.
+6. No user, company, agent, run, result, or report state is persisted.
+7. No data is refreshed, streamed, mutated, or loaded asynchronously.
+
+There is no backend data flow.
+
+**8. MVP requirement readiness**
+
+| Requirement | Status | Finding |
+|---|---|---|
+| Company/project creation | PARTIALLY READY | Signup contains a company field, but no persistence or project model: [components/auth/auth-form.tsx](components/auth/auth-form.tsx#L66) |
+| Agent connection | MISSING | Only navigation and marketing copy exist; no connection form or endpoint |
+| Agent version | PARTIALLY READY | Static provider/model fields exist in demo data, but no version management |
+| Scenario generation | PARTIALLY READY | Static generated scenarios exist in [lib/demo-data.ts](lib/demo-data.ts#L198), but no generator screen or generation service |
+| Test execution | PARTIALLY READY | Static running/queued steps exist, but no runner or execution engine |
+| Tool traces | MISSING | No trace model, storage, viewer, or tool-call capture |
+| Failure classification | PARTIALLY READY | Static categories and severities exist, but no classifier or persisted verdicts |
+| Unsafe/destructive action testing | PARTIALLY READY | Static examples include delete-tool misuse, but no sandbox/interception layer |
+| Reliability score | PARTIALLY READY | Dashboard visualization exists, but values are hardcoded |
+| Evaluation report | PARTIALLY READY | Marketing copy and score widgets exist, but no report route or generated report |
+| Version/regression tracking | PARTIALLY READY | Static regression data exists in [lib/demo-data.ts](lib/demo-data.ts#L371), but no version comparison workflow |
+
+No requirement is fully implemented end to end.
+
+**9. Exact integration points needing backend work**
+
+- Replace `AuthForm.onSubmit` with real authentication and session handling: [components/auth/auth-form.tsx](components/auth/auth-form.tsx#L15)
+- Persist company/workspace creation from the signup form: [components/auth/auth-form.tsx](components/auth/auth-form.tsx#L66)
+- Replace `company` demo data in the shell with workspace/session data: [components/app/app-shell.tsx](components/app/app-shell.tsx#L13)
+- Implement agent listing and connection UI for `/agents`.
+- Implement configuration for endpoint, SDK, tools, system prompt, environment, and version at `/agents/configure`.
+- Implement scenario generation form and loading/error states for `/scenarios`.
+- Implement real test-run submission, progress polling/streaming, cancellation, and failure handling for `/runner`.
+- Replace `recentRuns` with API-loaded data and add loading/empty/error states: [app/(app)/dashboard/page.tsx](app/(app)/dashboard/page.tsx#L10)
+- Make charts accept fetched data rather than importing constants: [components/dashboard/reliability-trend-chart.tsx](components/dashboard/reliability-trend-chart.tsx#L10), [components/dashboard/failure-distribution-chart.tsx](components/dashboard/failure-distribution-chart.tsx#L10)
+- Implement result detail pages with tool traces, raw responses, verdicts, evidence, and replay data at `/results`.
+- Implement reliability calculation and report generation at `/reliability`.
+- Implement version comparison and regression persistence at `/regressions`.
+- Add API/database loading, error, empty, and authorization states across every product route.
+- Add a real search implementation in [components/app/app-shell.tsx](components/app/app-shell.tsx#L64).
+
+**10. What should and should not change**
+
+Good and worth preserving:
+
+- Current visual language and brand identity
+- Component directory structure
+- Shared UI primitives
+- Dashboard composition
+- Recharts integration
+- TypeScript types in `lib/demo-data.ts` as initial domain-model candidates
+- Responsive shell and navigation patterns
+
+Must be fixed:
+
+- Missing product routes
+- Fake authentication
+- No persistence or backend integration
+- No agent execution/sandbox
+- No trace/result/report workflow
+- Hardcoded dashboard metrics
+- Dead links and nonfunctional controls
+- TypeScript error suppression in `next.config.mjs`
+
+Recommended next step:
+
+Build the backend contract and database model first for workspaces, agents, versions, scenarios, runs, steps/tool traces, classifications, results, reports, and regressions. Then implement `/agents` and `/agents/configure` as the first real vertical slice, followed by scenario generation and test execution.

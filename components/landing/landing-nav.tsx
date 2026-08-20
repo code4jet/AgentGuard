@@ -36,10 +36,10 @@ export function LandingNav() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Button render={<Link href="/login" />} variant="ghost" size="sm">
+          <Button render={<Link href="/login" />} nativeButton={false} variant="ghost" size="sm">
             Sign in
           </Button>
-          <Button render={<Link href="/login" />} size="sm">
+          <Button render={<Link href="/login" />} nativeButton={false} size="sm">
             Start testing
           </Button>
         </div>
@@ -68,10 +68,10 @@ export function LandingNav() {
               </a>
             ))}
             <div className="mt-2 flex flex-col gap-2">
-              <Button render={<Link href="/login" />} variant="outline" size="sm">
+              <Button render={<Link href="/login" />} nativeButton={false} variant="outline" size="sm">
                 Sign in
               </Button>
-              <Button render={<Link href="/login" />} size="sm">
+              <Button render={<Link href="/login" />} nativeButton={false} size="sm">
                 Start testing
               </Button>
             </div>
