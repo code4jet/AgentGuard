@@ -60,6 +60,29 @@ export async function listAgents(projectId: string) {
   return (data ?? []) as Agent[]
 }
 
+export async function updateAgent(
+  id: string,
+  input: Partial<Omit<Agent, 'id' | 'project_id' | 'created_at' | 'updated_at'>>
+) {
+  const supabase = await getClient()
+  const { data, error } = await supabase
+    .from('agents')
+    .update({ ...input, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data as Agent
+}
+
+export async function deleteAgent(id: string) {
+  const supabase = await getClient()
+  const { error } = await supabase.from('agents').delete().eq('id', id)
+  if (error) throw error
+  return true
+}
+
+
 export async function createAgentVersion(input: Omit<AgentVersion, 'id' | 'created_at'>) {
   const supabase = await getClient()
   const { data, error } = await supabase.from('agent_versions').insert(input).select().single()
@@ -73,6 +96,29 @@ export async function listAgentVersions(agentId: string) {
   if (error) throw error
   return (data ?? []) as AgentVersion[]
 }
+
+export async function getAgentVersion(id: string) {
+  const supabase = await getClient()
+  const { data, error } = await supabase.from('agent_versions').select().eq('id', id).maybeSingle()
+  if (error) throw error
+  return data as AgentVersion | null
+}
+
+export async function updateAgentVersion(
+  id: string,
+  input: Partial<Omit<AgentVersion, 'id' | 'agent_id' | 'created_at'>>
+) {
+  const supabase = await getClient()
+  const { data, error } = await supabase
+    .from('agent_versions')
+    .update(input)
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data as AgentVersion
+}
+
 
 export async function createScenario(input: Omit<Scenario, 'id' | 'created_at'>) {
   const supabase = await getClient()
