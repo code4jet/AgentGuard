@@ -213,6 +213,18 @@ export async function getLatestEvaluationRun(input: { projectId: string; agentId
   return data as EvaluationRun | null
 }
 
+export async function listCompletedEvaluationRunsByAgent(agentId: string) {
+  const supabase = await getClient()
+  const { data, error } = await supabase
+    .from('evaluation_runs')
+    .select()
+    .eq('agent_id', agentId)
+    .eq('status', 'completed')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []) as EvaluationRun[]
+}
+
 export async function listTestResults(evaluationRunId: string) {
   const supabase = await getClient()
   const { data, error } = await supabase

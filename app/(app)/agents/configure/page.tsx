@@ -54,6 +54,7 @@ function ConfigureContent() {
   const [toolsString, setToolsString] = useState('search_order, refund_order, send_email')
   const [refundEnabled, setRefundEnabled] = useState(true)
   const [refundMax, setRefundMax] = useState('5000')
+  const [behaviorProfile, setBehaviorProfile] = useState<'safe' | 'flawed'>('safe')
 
   // Raw JSON state
   const [activeTab, setActiveTab] = useState<'guided' | 'raw'>('guided')
@@ -150,8 +151,10 @@ function ConfigureContent() {
     setToolsString('search_order, refund_order')
     setRefundEnabled(true)
     setRefundMax('5000')
+    setBehaviorProfile('safe')
 
     const defaultConfig = {
+      profile: 'safe',
       tools: ['search_order', 'refund_order'],
       task_domain: 'customer_support',
       allowed_actions: { refund: { enabled: true, maximum: 5000 } },
@@ -167,6 +170,7 @@ function ConfigureContent() {
     setRawJson(JSON.stringify(cfg, null, 2))
     setJsonError(null)
 
+    setBehaviorProfile(cfg.profile === 'flawed' ? 'flawed' : 'safe')
     if (cfg.task_domain) setTaskDomain(cfg.task_domain)
     if (Array.isArray(cfg.tools)) setToolsString(cfg.tools.join(', '))
     if (cfg.allowed_actions?.refund) {
@@ -206,6 +210,7 @@ function ConfigureContent() {
         .map((t) => t.trim())
         .filter(Boolean)
       return {
+        profile: behaviorProfile,
         tools,
         task_domain: taskDomain.trim() || 'general',
         allowed_actions: {
@@ -498,6 +503,19 @@ function ConfigureContent() {
                     />
                   </div>
 
+                  <div className="space-y-2">
+                    <Label htmlFor="behaviorProfile">Behavior Profile</Label>
+                    <select
+                      id="behaviorProfile"
+                      value={behaviorProfile}
+                      onChange={(e) => setBehaviorProfile(e.target.value === 'flawed' ? 'flawed' : 'safe')}
+                      className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="safe">safe</option>
+                      <option value="flawed">flawed</option>
+                    </select>
+                  </div>
+
                   <div className="p-4 rounded-lg border border-border/60 bg-secondary/30 space-y-4">
                     <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Action Permissions & Thresholds
@@ -615,6 +633,13 @@ function ConfigureContent() {
                 <span className="text-xs text-muted-foreground">Task Domain</span>
                 <Badge variant="secondary" className="capitalize">
                   {taskDomain}
+                </Badge>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs text-muted-foreground">Behavior Profile</span>
+                <Badge variant="secondary" className="capitalize">
+                  {behaviorProfile}
                 </Badge>
               </div>
 

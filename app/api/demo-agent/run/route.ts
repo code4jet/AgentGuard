@@ -11,9 +11,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'scenario is required' }, { status: 400 })
   }
 
-  const agent = createDemoCustomerSupportAgent()
+  const profile = body.profile === 'flawed' ? 'flawed' : 'safe'
+  const agent = createDemoCustomerSupportAgent(profile)
   const result = await agent.invoke(
-    { connection: {} as any, version: {} as any },
+    { connection: {} as any, version: { configuration: { profile } } as any },
     { input: body.scenario },
   )
 
