@@ -9,6 +9,9 @@ export type Json =
 export type EvaluationRunStatus = 'created' | 'running' | 'completed' | 'failed'
 export type TestResultStatus = 'passed' | 'failed' | 'blocked' | 'error'
 export type FailureSeverity = 'low' | 'medium' | 'high' | 'critical'
+export type ConnectionType = 'mock' | 'http_webhook' | 'openai_assistant' | 'custom_api'
+export type AuthenticationType = 'none' | 'api_key_reference' | 'bearer_reference' | 'provider_key_reference'
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 export interface Project {
   id: string
@@ -36,6 +39,41 @@ export interface AgentVersion {
   configuration: Json
   created_at: string
 }
+
+export interface AgentConnection {
+  id: string
+  agent_id: string
+  connection_type: ConnectionType
+  provider: string | null
+  model: string | null
+  assistant_id: string | null
+  endpoint_url: string | null
+  http_method: HttpMethod
+  authentication_type: AuthenticationType
+  request_headers: Json
+  request_body_template: Json
+  credential_reference: string | null
+  timeout_ms: number
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateAgentConnectionInput {
+  agent_id: string
+  connection_type: ConnectionType
+  provider?: string | null
+  model?: string | null
+  assistant_id?: string | null
+  endpoint_url?: string | null
+  http_method?: HttpMethod
+  authentication_type?: AuthenticationType
+  request_headers?: Json
+  request_body_template?: Json
+  credential_reference?: string | null
+  timeout_ms?: number
+}
+
+export type UpdateAgentConnectionInput = Partial<Omit<CreateAgentConnectionInput, 'agent_id'>>
 
 export interface Scenario {
   id: string

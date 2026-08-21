@@ -7,7 +7,9 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const agentId = new URL(request.url).searchParams.get('agentId')
   if (!agentId) return NextResponse.json({ error: 'agentId is required' }, { status: 400 })
-  return NextResponse.json({ scenarios: await listScenarios(agentId) })
+  const versionId = new URL(request.url).searchParams.get('versionId')
+  const scenarios = await listScenarios(agentId)
+  return NextResponse.json({ scenarios: versionId ? scenarios.filter((scenario) => scenario.agent_version_id === versionId) : scenarios })
 }
 
 export async function POST(request: Request) {
